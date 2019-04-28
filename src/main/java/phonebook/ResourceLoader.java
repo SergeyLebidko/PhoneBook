@@ -1,6 +1,7 @@
 package phonebook;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class ResourceLoader {
             "ok",
             "facebook",
             "twitter",
+            "instagram",
             "mail"
     };
 
@@ -35,8 +37,13 @@ public class ResourceLoader {
         }
     }
 
-    public Image getResource(String name){
+    public Image getImageResource(String name){
         return resourceMap.get(name);
+    }
+
+    public ImageIcon getImageIconResource(String name){
+        Image image = resourceMap.get(name);
+        return name==null?null:new ImageIcon(image);
     }
 
 }
