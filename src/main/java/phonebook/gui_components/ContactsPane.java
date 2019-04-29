@@ -58,6 +58,7 @@ public class ContactsPane {
         contactsTable.setRowHeight(rowHeight);
         contactsTable.setShowVerticalLines(false);
         contactsTable.setGridColor(gridColor);
+        contactsTable.getTableHeader().setReorderingAllowed(false);
         try {
             tableModel.setContent(dataBaseConnector.loadContacts());
             tableModel.setSortOrder(ContactsTableModel.SORT_ORDER_TO_UP);
@@ -91,6 +92,7 @@ public class ContactsPane {
             if (e.getClickCount() == 1 & e.getButton() == MouseEvent.BUTTON1){
                 tableModel.revertSortOrder();
                 tableModel.refresh();
+                contactsTable.getTableHeader().repaint();
             }
         }
 
