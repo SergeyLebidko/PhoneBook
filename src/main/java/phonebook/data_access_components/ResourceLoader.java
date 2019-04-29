@@ -1,4 +1,4 @@
-package phonebook.dataaccesscomponents;
+package phonebook.data_access_components;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -20,7 +20,9 @@ public class ResourceLoader {
             "facebook",
             "twitter",
             "instagram",
-            "mail"
+            "mail",
+            "to_down",
+            "to_up"
     };
 
     private final String resourcePrefix = "images/";

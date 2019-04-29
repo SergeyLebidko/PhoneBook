@@ -1,7 +1,7 @@
 package phonebook;
 
-import phonebook.dataaccesscomponents.DataBaseConnector;
-import phonebook.dataaccesscomponents.ResourceLoader;
+import phonebook.data_access_components.DataBaseConnector;
+import phonebook.data_access_components.ResourceLoader;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -11,6 +11,8 @@ public class MainClass {
     public static DataBaseConnector dataBaseConnector;
 
     public static ResourceLoader resourceLoader;
+
+    public static GUI gui;
 
     public static void main(String[] args) {
         //Создаем подключение к базе данных
@@ -31,12 +33,7 @@ public class MainClass {
         }
 
         //Запускаем графический интерфейс
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GUI();
-            }
-        });
+        gui = new GUI();
     }
 
 }

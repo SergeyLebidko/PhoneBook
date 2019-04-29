@@ -1,4 +1,4 @@
-package phonebook.dataaccesscomponents;
+package phonebook.data_access_components;
 
 import phonebook.Contact;
 
@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 
 public class DataBaseConnector {
@@ -16,23 +14,24 @@ public class DataBaseConnector {
 
     private Statement statement;
 
-    DataBaseConnector() throws Exception {
+    public DataBaseConnector() throws Exception {
         Class.forName("org.sqlite.JDBC");
         Connection connection = DriverManager.getConnection(database);
         statement = connection.createStatement();
     }
 
     public Contact[] loadContacts() throws Exception {
-        return loadContacts("");
-    }
-
-    public Contact[] loadContacts(String filter) throws Exception {
         //Сперва получаем список имен
         ResultSet resultSet = executeQuery("SELECT * FROM CONTACTS");
 
+        //Формируем список
         LinkedList<Contact> contacts = new LinkedList<>();
+        int id;
+        String name;
         while (resultSet.next()) {
-            contacts.add(new Contact(resultSet.getInt(1), resultSet.getString(2)));
+            id = resultSet.getInt(1);
+            name = resultSet.getString(2);
+            contacts.add(new Contact(id, name));
         }
 
         return contacts.toArray(new Contact[contacts.size()]);

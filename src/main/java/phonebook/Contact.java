@@ -14,6 +14,18 @@ public class Contact {
         accounts = new LinkedList<>();
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LinkedList<Account> getAccounts() {
+        return accounts;
+    }
+
     public void addAccount(Account account){
         accounts.add(account);
     }
