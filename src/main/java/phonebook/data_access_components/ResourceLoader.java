@@ -13,7 +13,6 @@ public class ResourceLoader {
             "add",
             "delete",
             "edit",
-            "find",
             "telegram",
             "vk",
             "ok",

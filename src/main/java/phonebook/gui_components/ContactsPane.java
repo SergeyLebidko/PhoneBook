@@ -21,7 +21,6 @@ public class ContactsPane {
     private JButton deleteBtn;
     private JButton editBtn;
     private JTextField findField;
-    private JButton findBtn;
 
     private JTable contactsTable;
     private ContactsTableModel tableModel;
@@ -41,7 +40,6 @@ public class ContactsPane {
         findField = new JTextField();
         findField.setMinimumSize(new Dimension(100, 20));
         findField.setFont(mainFont);
-        findBtn = new JButton(resourceLoader.getImageIconResource("find"));
 
         topBox.add(addBtn);
         topBox.add(Box.createHorizontalStrut(5));
@@ -50,8 +48,6 @@ public class ContactsPane {
         topBox.add(editBtn);
         topBox.add(Box.createHorizontalStrut(5));
         topBox.add(findField);
-        topBox.add(Box.createHorizontalStrut(5));
-        topBox.add(findBtn);
 
         dataBaseConnector = MainClass.dataBaseConnector;
 
