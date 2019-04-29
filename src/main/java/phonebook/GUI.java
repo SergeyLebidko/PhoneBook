@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class GUI {
 
-    private final int WIDTH_FRM = 650;
+    private final int WIDTH_FRM = 800;
     private final int HEIGHT_FRM = 900;
 
     private ResourceLoader resourceLoader;
@@ -24,6 +24,15 @@ public class GUI {
 
         //Получаем загрузчик ресурсов
         resourceLoader = MainClass.resourceLoader;
+
+        //Получаем объект доступа к БД
+        DataBaseConnector dataBaseConnector = MainClass.dataBaseConnector;
+
+        try {
+            dataBaseConnector.loadContacts();
+        } catch (Exception e) {
+            System.out.println("Не удалось загрузить контакты: "+e.getMessage());
+        }
 
         //Создаем главное окно
         frm = new JFrame("PhoneBook");
