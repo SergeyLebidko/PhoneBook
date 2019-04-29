@@ -71,6 +71,17 @@ public class ContactsTableModel extends AbstractTableModel {
         currentSortOrder = sortOrder;
     }
 
+    public void revertSortOrder(){
+        if (currentSortOrder==SORT_ORDER_TO_UP){
+            currentSortOrder=SORT_ORDER_TO_DOWN;
+            return;
+        }
+        if (currentSortOrder==SORT_ORDER_TO_DOWN){
+            currentSortOrder=SORT_ORDER_TO_UP;
+            return;
+        }
+    }
+
     public int getCurrentSortOrder(){
         return currentSortOrder;
     }

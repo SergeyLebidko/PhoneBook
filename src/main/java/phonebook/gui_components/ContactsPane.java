@@ -1,6 +1,5 @@
 package phonebook.gui_components;
 
-import phonebook.Contact;
 import phonebook.MainClass;
 import phonebook.data_access_components.DataBaseConnector;
 import phonebook.data_access_components.ResourceLoader;
@@ -8,8 +7,10 @@ import phonebook.data_access_components.ResourceLoader;
 import static phonebook.gui_components.GUIProperties.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class ContactsPane {
 
@@ -78,10 +79,24 @@ public class ContactsPane {
 
         contentPane.add(topBox, BorderLayout.NORTH);
         contentPane.add(scrollPane, BorderLayout.CENTER);
+
+        contactsTable.getTableHeader().addMouseListener(headerClickListener);
     }
 
     public JPanel getVisualComponent() {
         return contentPane;
     }
+
+    private MouseListener headerClickListener = new MouseAdapter() {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 1 & e.getButton() == MouseEvent.BUTTON1){
+                tableModel.revertSortOrder();
+                tableModel.refresh();
+            }
+        }
+
+    };
 
 }
