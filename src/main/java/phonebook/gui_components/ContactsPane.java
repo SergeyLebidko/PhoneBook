@@ -7,10 +7,10 @@ import phonebook.data_access_components.ResourceLoader;
 import static phonebook.gui_components.GUIProperties.*;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 
 public class ContactsPane {
 
@@ -81,6 +81,7 @@ public class ContactsPane {
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         contactsTable.getTableHeader().addMouseListener(headerClickListener);
+        findField.addKeyListener(findFieldListener);
     }
 
     public JPanel getVisualComponent() {
@@ -97,6 +98,15 @@ public class ContactsPane {
             }
         }
 
+    };
+
+    private KeyListener findFieldListener = new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            String filter = findField.getText();
+            tableModel.setFilter(filter);
+            tableModel.refresh();
+        }
     };
 
 }

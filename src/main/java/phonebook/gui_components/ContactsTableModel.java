@@ -50,7 +50,7 @@ public class ContactsTableModel extends AbstractTableModel {
         for (Contact contact: currentContent){
             if (!currentFilter.equals("")){
                 name = contact.getName();
-                if (name.indexOf(currentFilter)==(-1))continue;
+                if (name.toLowerCase().indexOf(currentFilter)==(-1))continue;
             }
             rowValues.add(contact);
         }
