@@ -1,4 +1,6 @@
-package phonebook;
+package phonebook.dataaccesscomponents;
+
+import phonebook.Contact;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

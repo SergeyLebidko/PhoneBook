@@ -1,4 +1,4 @@
-package phonebook;
+package phonebook.dataaccesscomponents;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

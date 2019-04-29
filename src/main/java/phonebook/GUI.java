@@ -1,5 +1,8 @@
 package phonebook;
 
+import phonebook.dataaccesscomponents.DataBaseConnector;
+import phonebook.dataaccesscomponents.ResourceLoader;
+
 import javax.swing.*;
 import java.awt.*;
 
