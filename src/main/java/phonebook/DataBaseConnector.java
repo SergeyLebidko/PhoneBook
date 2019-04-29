@@ -17,11 +17,11 @@ public class DataBaseConnector {
         statement = connection.createStatement();
     }
 
-    public ResultSet executeQuery(String SQLQuery) throws Exception{
+    private ResultSet executeQuery(String SQLQuery) throws Exception{
         return statement.executeQuery(SQLQuery);
     }
 
-    public int updateQuery(String SQLQuery) throws  Exception{
+    private int updateQuery(String SQLQuery) throws  Exception{
         return statement.executeUpdate(SQLQuery);
     }
 
