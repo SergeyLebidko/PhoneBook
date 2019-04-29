@@ -98,6 +98,6 @@ public class ContactsTableModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return rowValues.get(rowIndex).getName();
+        return rowValues.get(rowIndex);
     }
 }
