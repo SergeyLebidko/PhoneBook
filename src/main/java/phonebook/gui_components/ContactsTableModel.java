@@ -39,8 +39,6 @@ public class ContactsTableModel extends AbstractTableModel {
     }
 
     public void refresh() {
-        if (currentContent.length==0)return;
-
         //Сортируем контент
         Arrays.sort(currentContent, contactComparator);
 

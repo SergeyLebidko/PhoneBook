@@ -1,5 +1,6 @@
 package phonebook.gui_components;
 
+import phonebook.Contact;
 import phonebook.MainClass;
 import phonebook.data_access_components.DataBaseConnector;
 import phonebook.data_access_components.ResourceLoader;
@@ -67,7 +68,7 @@ public class ContactsPane {
             tableModel.setFilter("");
             tableModel.refresh();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: "+e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: " + e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
         ContactsTableHeaderRenderer headerRenderer = new ContactsTableHeaderRenderer(tableModel);
@@ -80,6 +81,7 @@ public class ContactsPane {
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         addBtn.addActionListener(addBtnListener);
+        deleteBtn.addActionListener(deleteBtdListener);
         cleanFindFieldBtn.addActionListener(cleanBtnListener);
         contactsTable.getTableHeader().addMouseListener(headerClickListener);
         findField.addKeyListener(findFieldListener);
@@ -101,19 +103,19 @@ public class ContactsPane {
                 name = JOptionPane.showInputDialog(null, "Введите имя", "");
                 if (name == null) return;
                 name = name.trim();
-                if (name.equals("")){
+                if (name.equals("")) {
                     JOptionPane.showMessageDialog(null, "Имя не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
                     continue;
                 }
-                findDeniedChar=false;
+                findDeniedChar = false;
                 for (char c : name.toCharArray()) {
-                    if (deniedChars.indexOf(c)!=(-1)){
-                        findDeniedChar=true;
+                    if (deniedChars.indexOf(c) != (-1)) {
+                        findDeniedChar = true;
                         break;
                     }
                 }
-                if (findDeniedChar){
-                    JOptionPane.showMessageDialog(null, "Имя не может содержать символы "+deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
+                if (findDeniedChar) {
+                    JOptionPane.showMessageDialog(null, "Имя не может содержать символы " + deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
                     continue;
                 }
                 break;
@@ -134,7 +136,40 @@ public class ContactsPane {
                 tableModel.setFilter(name);
                 tableModel.refresh();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: "+ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+        }
+    };
+
+    private ActionListener deleteBtdListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int[] selectedRows = contactsTable.getSelectedRows();
+            int rowsCount = selectedRows.length;
+            if (rowsCount == 0) return;
+
+            //Получаем объекты Contact для выделенных строк
+            Contact[] contacts = new Contact[rowsCount];
+            for (int i = 0; i < rowsCount; i++) {
+                contacts[i] = (Contact) tableModel.getValueAt(selectedRows[i], 0);
+            }
+
+            //Полседовательно удаляем контакты
+            for (Contact contact : contacts) {
+                try {
+                    dataBaseConnector.deleteContact(contact);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Ошибка при удалении контакта "+contact.getName()+": " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            //Обновляем панель контактов после удаления
+            try {
+                tableModel.setContent(dataBaseConnector.loadContacts());
+                tableModel.refresh();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
         }
@@ -144,7 +179,7 @@ public class ContactsPane {
         @Override
         public void actionPerformed(ActionEvent e) {
             String filter = findField.getText();
-            if (filter.equals(""))return;
+            if (filter.equals("")) return;
             findField.setText("");
             tableModel.setFilter("");
             tableModel.refresh();

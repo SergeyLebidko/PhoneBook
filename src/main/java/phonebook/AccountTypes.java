@@ -3,9 +3,9 @@ package phonebook;
 public enum AccountTypes {
 
     PHONE ("", "", "phone"),
+    MAIL("mailto:", "", "mail"),
     FACEBOOK ("https://", "www.facebook.com/", "facebook"),
     INSTAGRAM ("https://", "instagram.com/", "instagram"),
-    MAIL("mailto:", "", "mail"),
     OK ("https://", "ok.ru/", "ok"),
     TELEGRAM ("https://", "t.me/", "telegram"),
     TWITTER ("https://", "twitter.com/", "twitter"),

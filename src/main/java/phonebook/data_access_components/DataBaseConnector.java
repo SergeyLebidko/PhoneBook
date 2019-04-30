@@ -34,12 +34,21 @@ public class DataBaseConnector {
             contacts.add(new Contact(id, name));
         }
 
+        //ВСТАВИТЬ КОД ПОЛУЧЕНИЯ АККАУНТОВ ДЛЯ ЗАГРУЖЕННЫХ КОНТАКТОВ
+
         return contacts.toArray(new Contact[contacts.size()]);
     }
 
     public void addContact(String contact) throws Exception {
         String query = "INSERT INTO CONTACTS (NAME) VALUES (\""+contact+"\")";
         updateQuery(query);
+    }
+
+    public void deleteContact(Contact contact) throws Exception {
+        String query = "DELETE FROM CONTACTS WHERE ID="+contact.getId();
+        updateQuery(query);
+
+        //ВСТАВИТЬ КОД УДАЛЕНИЯ АККАУНТОВ, СВЯЗАННЫХ С ДАННЫМ КОНТАКТОМ
     }
 
     private ResultSet executeQuery(String SQLQuery) throws Exception {
