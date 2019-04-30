@@ -1,7 +1,7 @@
 package phonebook;
 
 import phonebook.data_access_components.ResourceLoader;
-import phonebook.gui_components.ContactsPane;
+import phonebook.gui_components.contact_components.ContactsPane;
 
 import javax.swing.*;
 import java.awt.*;

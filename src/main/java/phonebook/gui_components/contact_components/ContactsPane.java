@@ -1,4 +1,4 @@
-package phonebook.gui_components;
+package phonebook.gui_components.contact_components;
 
 import phonebook.Contact;
 import phonebook.MainClass;
