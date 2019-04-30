@@ -1,6 +1,7 @@
 package phonebook;
 
 import phonebook.data_access_components.ResourceLoader;
+import phonebook.gui_components.account_components.AccoutsPane;
 import phonebook.gui_components.contact_components.ContactsPane;
 
 import javax.swing.*;
@@ -12,6 +13,9 @@ public class GUI {
     private final int HEIGHT_FRM = 800;
 
     private ResourceLoader resourceLoader;
+
+    private ContactsPane contactsPane;
+    private AccoutsPane accoutsPane;
 
     private JFrame frm;
 
@@ -39,16 +43,20 @@ public class GUI {
         contentPane.setLayout(new BorderLayout());
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        ContactsPane contactsPane = new ContactsPane();
-        splitPane.add(contactsPane.getVisualComponent());
         splitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        splitPane.setResizeWeight(0.5);
 
-        splitPane.add(new ContactsPane().getVisualComponent());
+        accoutsPane = new AccoutsPane();
+        contactsPane = new ContactsPane(accoutsPane);
+
+        splitPane.add(contactsPane.getVisualComponent(), JSplitPane.LEFT);
+        splitPane.add(accoutsPane.getVisualComponent(), JSplitPane.RIGHT);
 
         contentPane.add(splitPane, BorderLayout.CENTER);
         frm.setContentPane(contentPane);
         frm.setVisible(true);
+
+        splitPane.setDividerLocation(0.5);
+        splitPane.setResizeWeight(0.5);
     }
 
 }

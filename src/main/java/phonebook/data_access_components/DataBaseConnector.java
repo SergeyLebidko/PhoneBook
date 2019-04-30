@@ -1,5 +1,6 @@
 package phonebook.data_access_components;
 
+import phonebook.Account;
 import phonebook.Contact;
 
 import java.sql.Connection;
@@ -22,7 +23,8 @@ public class DataBaseConnector {
 
     public Contact[] loadContacts() throws Exception {
         //Сперва получаем список имен
-        ResultSet resultSet = executeQuery("SELECT * FROM CONTACTS");
+        ResultSet resultSet;
+        resultSet = executeQuery("SELECT * FROM CONTACTS");
 
         //Формируем список
         LinkedList<Contact> contacts = new LinkedList<>();
@@ -34,7 +36,22 @@ public class DataBaseConnector {
             contacts.add(new Contact(id, name));
         }
 
-        //ВСТАВИТЬ КОД ПОЛУЧЕНИЯ АККАУНТОВ ДЛЯ ЗАГРУЖЕННЫХ КОНТАКТОВ
+        //Заполняем списки аккаунтов каждого контакта
+        String type;
+        String protocol;
+        String address;
+        String account;
+        for (Contact contact: contacts){
+            id = contact.getId();
+            resultSet = executeQuery("SELECT * FROM ACCOUNTS WHERE CONTACT_ID="+id);
+            while (resultSet.next()){
+                type = resultSet.getString(2);
+                protocol = resultSet.getString(3);
+                address = resultSet.getString(4);
+                account = resultSet.getString(5);
+                contact.addAccount(new Account(id, type, protocol, address, account));
+            }
+        }
 
         return contacts.toArray(new Contact[contacts.size()]);
     }

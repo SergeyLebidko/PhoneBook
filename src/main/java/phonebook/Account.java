@@ -16,6 +16,26 @@ public class Account {
         this.account = account;
     }
 
+    public int getContactId() {
+        return contactId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getProtocol() {
+        return protocol;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -30,7 +50,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "[ contactId=" + contactId + " type=" + type + " protocol=" + protocol + " address=" + address + " account=" + account + " ]";
+        return account;
     }
 
 }

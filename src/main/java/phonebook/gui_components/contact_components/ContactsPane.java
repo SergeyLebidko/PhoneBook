@@ -4,10 +4,14 @@ import phonebook.Contact;
 import phonebook.MainClass;
 import phonebook.data_access_components.DataBaseConnector;
 import phonebook.data_access_components.ResourceLoader;
+import phonebook.gui_components.account_components.AccoutsPane;
 
 import static phonebook.gui_components.GUIProperties.*;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -15,6 +19,7 @@ public class ContactsPane {
 
     private JPanel contentPane;
     private DataBaseConnector dataBaseConnector;
+    private ResourceLoader resourceLoader;
 
     private JButton addBtn;
     private JButton deleteBtn;
@@ -24,13 +29,16 @@ public class ContactsPane {
 
     private JTable contactsTable;
     private ContactsTableModel tableModel;
+    private AccoutsPane accoutsPane;
 
-    public ContactsPane() {
+    public ContactsPane(AccoutsPane accoutsPane) {
+        dataBaseConnector = MainClass.dataBaseConnector;
+        resourceLoader = MainClass.resourceLoader;
+        this.accoutsPane = accoutsPane;
+
         contentPane = new JPanel();
         contentPane.setLayout(new BorderLayout(5, 5));
         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-        ResourceLoader resourceLoader = MainClass.resourceLoader;
 
         Box topBox = Box.createHorizontalBox();
 
@@ -51,8 +59,6 @@ public class ContactsPane {
         topBox.add(findField);
         topBox.add(Box.createHorizontalStrut(5));
         topBox.add(cleanFindFieldBtn);
-
-        dataBaseConnector = MainClass.dataBaseConnector;
 
         tableModel = new ContactsTableModel();
         contactsTable = new JTable(tableModel);
@@ -83,6 +89,7 @@ public class ContactsPane {
         addBtn.addActionListener(addBtnListener);
         deleteBtn.addActionListener(deleteBtdListener);
         cleanFindFieldBtn.addActionListener(cleanBtnListener);
+        contactsTable.addMouseListener(tableMouseListener);
         contactsTable.getTableHeader().addMouseListener(headerClickListener);
         findField.addKeyListener(findFieldListener);
     }
@@ -155,12 +162,12 @@ public class ContactsPane {
                 contacts[i] = (Contact) tableModel.getValueAt(selectedRows[i], 0);
             }
 
-            //Полседовательно удаляем контакты
+            //Последовательно удаляем контакты
             for (Contact contact : contacts) {
                 try {
                     dataBaseConnector.deleteContact(contact);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Ошибка при удалении контакта "+contact.getName()+": " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Ошибка при удалении контакта " + contact.getName() + ": " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -183,6 +190,29 @@ public class ContactsPane {
             findField.setText("");
             tableModel.setFilter("");
             tableModel.refresh();
+        }
+    };
+
+    private MouseListener tableMouseListener = new MouseAdapter() {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            if (e.getButton()!=MouseEvent.BUTTON1)return;
+
+            //получаем список выделенных строк
+            int[] selectedRows = contactsTable.getSelectedRows();
+            int rowsCount = selectedRows.length;
+            if (rowsCount == 0) return;
+
+            //Если выделен один контакт - показать сведения о нем
+            if (rowsCount==1){
+                accoutsPane.setContact((Contact) tableModel.getValueAt(selectedRows[0], 0));
+                return;
+            }
+
+            //Если выделено несколько - очистить панель аккаунтов
+            if (rowsCount>1){
+                accoutsPane.clear();
+            }
         }
     };
 
