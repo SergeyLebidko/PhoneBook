@@ -1,6 +1,5 @@
 package phonebook.gui_components;
 
-import phonebook.Contact;
 import phonebook.MainClass;
 import phonebook.data_access_components.DataBaseConnector;
 import phonebook.data_access_components.ResourceLoader;
@@ -8,8 +7,6 @@ import phonebook.data_access_components.ResourceLoader;
 import static phonebook.gui_components.GUIProperties.*;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -22,6 +19,7 @@ public class ContactsPane {
     private JButton deleteBtn;
     private JButton editBtn;
     private JTextField findField;
+    private JButton cleanFindFieldBtn;
 
     private JTable contactsTable;
     private ContactsTableModel tableModel;
@@ -41,6 +39,7 @@ public class ContactsPane {
         findField = new JTextField();
         findField.setMinimumSize(new Dimension(100, 20));
         findField.setFont(mainFont);
+        cleanFindFieldBtn = new JButton(resourceLoader.getImageIconResource("clean"));
 
         topBox.add(addBtn);
         topBox.add(Box.createHorizontalStrut(5));
@@ -49,6 +48,8 @@ public class ContactsPane {
         topBox.add(editBtn);
         topBox.add(Box.createHorizontalStrut(5));
         topBox.add(findField);
+        topBox.add(Box.createHorizontalStrut(5));
+        topBox.add(cleanFindFieldBtn);
 
         dataBaseConnector = MainClass.dataBaseConnector;
 
@@ -79,6 +80,7 @@ public class ContactsPane {
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         addBtn.addActionListener(addBtnListener);
+        cleanFindFieldBtn.addActionListener(cleanBtnListener);
         contactsTable.getTableHeader().addMouseListener(headerClickListener);
         findField.addKeyListener(findFieldListener);
     }
@@ -135,6 +137,17 @@ public class ContactsPane {
                 JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: "+ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
+        }
+    };
+
+    private ActionListener cleanBtnListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String filter = findField.getText();
+            if (filter.equals(""))return;
+            findField.setText("");
+            tableModel.setFilter("");
+            tableModel.refresh();
         }
     };
 

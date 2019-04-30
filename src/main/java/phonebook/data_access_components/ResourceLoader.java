@@ -21,7 +21,8 @@ public class ResourceLoader {
             "instagram",
             "mail",
             "to_down",
-            "to_up"
+            "to_up",
+            "clean"
     };
 
     private final String resourcePrefix = "images/";
