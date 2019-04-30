@@ -37,6 +37,11 @@ public class DataBaseConnector {
         return contacts.toArray(new Contact[contacts.size()]);
     }
 
+    public void addContact(String contact) throws Exception {
+        String query = "INSERT INTO CONTACTS (NAME) VALUES (\""+contact+"\")";
+        updateQuery(query);
+    }
+
     private ResultSet executeQuery(String SQLQuery) throws Exception {
         return statement.executeQuery(SQLQuery);
     }

@@ -19,6 +19,12 @@ public class GUI {
         //Получаем загрузчик ресурсов
         resourceLoader = MainClass.resourceLoader;
 
+        //Русифицируем некоторые надписи в диалоговых окнах
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        UIManager.put("OptionPane.inputDialogTitle", "");
+
         //Создаем главное окно
         frm = new JFrame("PhoneBook");
         frm.setIconImage(resourceLoader.getImageResource("logo"));
@@ -43,10 +49,6 @@ public class GUI {
         contentPane.add(splitPane, BorderLayout.CENTER);
         frm.setContentPane(contentPane);
         frm.setVisible(true);
-    }
-
-    public void showErrorMsg(String msg){
-        JOptionPane.showMessageDialog(frm, msg, "", JOptionPane.ERROR_MESSAGE);
     }
 
 }

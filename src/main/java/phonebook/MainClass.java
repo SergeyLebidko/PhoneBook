@@ -12,8 +12,6 @@ public class MainClass {
 
     public static ResourceLoader resourceLoader;
 
-    public static GUI gui;
-
     public static void main(String[] args) {
         //Создаем подключение к базе данных
         try {
@@ -33,7 +31,12 @@ public class MainClass {
         }
 
         //Запускаем графический интерфейс
-        gui = new GUI();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new GUI();
+            }
+        });
     }
 
 }

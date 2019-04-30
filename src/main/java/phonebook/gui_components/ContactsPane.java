@@ -1,5 +1,6 @@
 package phonebook.gui_components;
 
+import phonebook.Contact;
 import phonebook.MainClass;
 import phonebook.data_access_components.DataBaseConnector;
 import phonebook.data_access_components.ResourceLoader;
@@ -65,7 +66,7 @@ public class ContactsPane {
             tableModel.setFilter("");
             tableModel.refresh();
         } catch (Exception e) {
-            MainClass.gui.showErrorMsg("Ошибка при получении списка контактов: "+e.getMessage());
+            JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: "+e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
         ContactsTableHeaderRenderer headerRenderer = new ContactsTableHeaderRenderer(tableModel);
@@ -77,6 +78,7 @@ public class ContactsPane {
         contentPane.add(topBox, BorderLayout.NORTH);
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
+        addBtn.addActionListener(addBtnListener);
         contactsTable.getTableHeader().addMouseListener(headerClickListener);
         findField.addKeyListener(findFieldListener);
     }
@@ -85,11 +87,62 @@ public class ContactsPane {
         return contentPane;
     }
 
+    private ActionListener addBtnListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String deniedChars = "_%*?\"'";
+            boolean findDeniedChar;
+            String name;
+
+            //Получаем от пользователя имя создаваемого контакта
+            do {
+                name = JOptionPane.showInputDialog(null, "Введите имя", "");
+                if (name == null) return;
+                name = name.trim();
+                if (name.equals("")){
+                    JOptionPane.showMessageDialog(null, "Имя не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
+                    continue;
+                }
+                findDeniedChar=false;
+                for (char c : name.toCharArray()) {
+                    if (deniedChars.indexOf(c)!=(-1)){
+                        findDeniedChar=true;
+                        break;
+                    }
+                }
+                if (findDeniedChar){
+                    JOptionPane.showMessageDialog(null, "Имя не может содержать символы "+deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
+                    continue;
+                }
+                break;
+            } while (true);
+
+            //Пробуем добавить контакт в БД
+            try {
+                dataBaseConnector.addContact(name);
+            } catch (Exception e1) {
+                JOptionPane.showMessageDialog(null, "Не удалось добавить контакт в базу данных", "", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            //Если контакт успешно добавлен - обновляем панель контактов
+            try {
+                tableModel.setContent(dataBaseConnector.loadContacts());
+                findField.setText(name);
+                tableModel.setFilter(name);
+                tableModel.refresh();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: "+ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+        }
+    };
+
     private MouseListener headerClickListener = new MouseAdapter() {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (e.getClickCount() == 1 & e.getButton() == MouseEvent.BUTTON1){
+            if (e.getClickCount() == 1 & e.getButton() == MouseEvent.BUTTON1) {
                 tableModel.revertSortOrder();
                 tableModel.refresh();
                 contactsTable.getTableHeader().repaint();
