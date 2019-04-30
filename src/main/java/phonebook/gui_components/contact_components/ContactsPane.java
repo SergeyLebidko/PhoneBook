@@ -88,6 +88,7 @@ public class ContactsPane {
 
         addBtn.addActionListener(addBtnListener);
         deleteBtn.addActionListener(deleteBtdListener);
+        editBtn.addActionListener(editBtnListener);
         cleanFindFieldBtn.addActionListener(cleanBtnListener);
         contactsTable.addMouseListener(tableMouseListener);
         contactsTable.getTableHeader().addMouseListener(headerClickListener);
@@ -101,7 +102,7 @@ public class ContactsPane {
     private ActionListener addBtnListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String deniedChars = "_%*?\"'";
+            String deniedChars = "_%*\"?'";
             boolean findDeniedChar;
             String name;
 
@@ -131,7 +132,7 @@ public class ContactsPane {
             //Пробуем добавить контакт в БД
             try {
                 dataBaseConnector.addContact(name);
-            } catch (Exception e1) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Не удалось добавить контакт в базу данных", "", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
@@ -182,6 +183,64 @@ public class ContactsPane {
         }
     };
 
+    private ActionListener editBtnListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            //Получаем список выделенных строк
+            int[] selectedRows = contactsTable.getSelectedRows();
+            int rowsCount = selectedRows.length;
+            if (rowsCount != 1) return;
+
+            //Получаем новое имя для контакта
+            String deniedChars = "_%*\"?'";
+            boolean findDeniedChar;
+            String name;
+
+            do {
+                name = JOptionPane.showInputDialog(null, "Введите имя", tableModel.getValueAt(selectedRows[0],0));
+                if (name == null) return;
+                name = name.trim();
+                if (name.equals("")) {
+                    JOptionPane.showMessageDialog(null, "Имя не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
+                    continue;
+                }
+                findDeniedChar = false;
+                for (char c : name.toCharArray()) {
+                    if (deniedChars.indexOf(c) != (-1)) {
+                        findDeniedChar = true;
+                        break;
+                    }
+                }
+                if (findDeniedChar) {
+                    JOptionPane.showMessageDialog(null, "Имя не может содержать символы " + deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
+                    continue;
+                }
+                break;
+            } while (true);
+
+            //Пытаемся установить новое имя
+            Contact contact = (Contact) tableModel.getValueAt(selectedRows[0],0);
+            int id = contact.getId();
+            try {
+                dataBaseConnector.changeContact(id, name);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Не удалось изменить контакт "+ex.getMessage(), "", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            //Если контакт успешно обновлен - обновляем и панель контактов
+            try {
+                tableModel.setContent(dataBaseConnector.loadContacts());
+                findField.setText(name);
+                tableModel.setFilter(name);
+                tableModel.refresh();
+             } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            }
+        }
+    };
+
     private ActionListener cleanBtnListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -198,7 +257,7 @@ public class ContactsPane {
         public void mouseReleased(MouseEvent e) {
             if (e.getButton()!=MouseEvent.BUTTON1)return;
 
-            //получаем список выделенных строк
+            //Получаем список выделенных строк
             int[] selectedRows = contactsTable.getSelectedRows();
             int rowsCount = selectedRows.length;
             if (rowsCount == 0) return;
@@ -217,7 +276,6 @@ public class ContactsPane {
     };
 
     private MouseListener headerClickListener = new MouseAdapter() {
-
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 1 & e.getButton() == MouseEvent.BUTTON1) {
@@ -226,7 +284,6 @@ public class ContactsPane {
                 contactsTable.getTableHeader().repaint();
             }
         }
-
     };
 
     private KeyListener findFieldListener = new KeyAdapter() {
