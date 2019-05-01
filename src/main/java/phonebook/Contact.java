@@ -14,12 +14,6 @@ public class Contact {
         accounts = new LinkedList<>();
     }
 
-    public Contact(String name){
-        id = (-1);
-        this.name = name;
-        accounts = new LinkedList<>();
-    }
-
     public int getId() {
         return id;
     }

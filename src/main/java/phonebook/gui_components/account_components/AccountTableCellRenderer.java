@@ -13,7 +13,7 @@ public class AccountTableCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         JLabel lab = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         Account account = (Account)value;
-        lab.setHorizontalAlignment(SwingConstants.CENTER);
+        lab.setHorizontalAlignment(SwingConstants.LEFT);
         if (column==0){
             lab.setText("");
             lab.setIcon(MainClass.resourceLoader.getImageIconResource(account.getType()));

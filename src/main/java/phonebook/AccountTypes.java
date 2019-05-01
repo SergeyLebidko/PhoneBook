@@ -9,7 +9,7 @@ public enum AccountTypes {
     OK ("https://", "ok.ru/", "ok"),
     TELEGRAM ("https://", "t.me/", "telegram"),
     TWITTER ("https://", "twitter.com/", "twitter"),
-    VK("https://", "vc.com/", "vk");
+    VK("https://", "vk.com/", "vk");
 
     private String protocol;
     private String address;

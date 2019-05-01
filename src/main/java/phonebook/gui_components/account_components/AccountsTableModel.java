@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-public class AccauntsTableModel extends AbstractTableModel {
+public class AccountsTableModel extends AbstractTableModel {
 
     private Account[] currentAccounts;
     private AccountComparator accountComparator;
@@ -27,7 +27,7 @@ public class AccauntsTableModel extends AbstractTableModel {
 
     }
 
-    public AccauntsTableModel() {
+    public AccountsTableModel() {
         currentAccounts = new Account[0];
         accountComparator = new AccountComparator();
     }

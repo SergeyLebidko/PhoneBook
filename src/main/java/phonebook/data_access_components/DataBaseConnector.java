@@ -61,6 +61,12 @@ public class DataBaseConnector {
         updateQuery(query);
     }
 
+    public void addAccount(Account account) throws Exception {
+        String query = "INSERT INTO ACCOUNTS (CONTACT_ID, TYPE, PROTOCOL, ADDRESS, ACCOUNT) VALUES (";
+        query+=account.getContactId()+", \""+account.getType()+"\", \""+account.getProtocol()+"\", \""+account.getAddress()+"\", \""+account.getAccount()+"\")";
+        updateQuery(query);
+    }
+
     public void deleteContact(Contact contact) throws Exception {
         String query = "DELETE FROM CONTACTS WHERE ID="+contact.getId();
         updateQuery(query);
