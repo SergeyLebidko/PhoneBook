@@ -192,12 +192,13 @@ public class ContactsPane {
             if (rowsCount != 1) return;
 
             //Получаем новое имя для контакта
+            Contact selectedContact = (Contact) tableModel.getValueAt(selectedRows[0], 0);
             String deniedChars = "_%*\"?'";
             boolean findDeniedChar;
             String name;
 
             do {
-                name = JOptionPane.showInputDialog(null, "Введите имя", tableModel.getValueAt(selectedRows[0],0));
+                name = JOptionPane.showInputDialog(null, "Введите имя", selectedContact);
                 if (name == null) return;
                 name = name.trim();
                 if (name.equals("")) {
@@ -218,13 +219,13 @@ public class ContactsPane {
                 break;
             } while (true);
 
-            //Пытаемся установить новое имя
-            Contact contact = (Contact) tableModel.getValueAt(selectedRows[0],0);
-            int id = contact.getId();
+            //Пытаемся записать новое имя в базу данных
+            selectedContact.setName(name);
+            int id = selectedContact.getId();
             try {
-                dataBaseConnector.changeContact(id, name);
+                dataBaseConnector.changeContact(selectedContact);
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Не удалось изменить контакт "+ex.getMessage(), "", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Не удалось изменить контакт " + ex.getMessage(), "", JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
 
@@ -234,7 +235,9 @@ public class ContactsPane {
                 findField.setText(name);
                 tableModel.setFilter(name);
                 tableModel.refresh();
-             } catch (Exception ex) {
+                selectedContact.setName(name);
+                accoutsPane.setContact(selectedContact);
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
             }
@@ -255,7 +258,7 @@ public class ContactsPane {
     private MouseListener tableMouseListener = new MouseAdapter() {
         @Override
         public void mouseReleased(MouseEvent e) {
-            if (e.getButton()!=MouseEvent.BUTTON1)return;
+            if (e.getButton() != MouseEvent.BUTTON1) return;
 
             //Получаем список выделенных строк
             int[] selectedRows = contactsTable.getSelectedRows();
@@ -263,13 +266,13 @@ public class ContactsPane {
             if (rowsCount == 0) return;
 
             //Если выделен один контакт - показать сведения о нем
-            if (rowsCount==1){
+            if (rowsCount == 1) {
                 accoutsPane.setContact((Contact) tableModel.getValueAt(selectedRows[0], 0));
                 return;
             }
 
             //Если выделено несколько - очистить панель аккаунтов
-            if (rowsCount>1){
+            if (rowsCount > 1) {
                 accoutsPane.clear();
             }
         }

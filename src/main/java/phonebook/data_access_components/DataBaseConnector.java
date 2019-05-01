@@ -68,8 +68,8 @@ public class DataBaseConnector {
         //ВСТАВИТЬ КОД УДАЛЕНИЯ АККАУНТОВ, СВЯЗАННЫХ С ДАННЫМ КОНТАКТОМ
     }
 
-    public void changeContact(int id, String name) throws Exception {
-        String query = "UPDATE CONTACTS SET NAME = \""+name+"\" WHERE ID="+id;
+    public void changeContact(Contact contact) throws Exception {
+        String query = "UPDATE CONTACTS SET NAME = \""+contact.getName()+"\" WHERE ID="+contact.getId();
         updateQuery(query);
     }
 
