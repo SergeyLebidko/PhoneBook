@@ -102,32 +102,8 @@ public class ContactsPane {
     private ActionListener addBtnListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String deniedChars = "_%*\"?'";
-            boolean findDeniedChar;
-            String name;
-
-            //Получаем от пользователя имя создаваемого контакта
-            do {
-                name = JOptionPane.showInputDialog(null, "Введите имя", "");
-                if (name == null) return;
-                name = name.trim();
-                if (name.equals("")) {
-                    JOptionPane.showMessageDialog(null, "Имя не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
-                    continue;
-                }
-                findDeniedChar = false;
-                for (char c : name.toCharArray()) {
-                    if (deniedChars.indexOf(c) != (-1)) {
-                        findDeniedChar = true;
-                        break;
-                    }
-                }
-                if (findDeniedChar) {
-                    JOptionPane.showMessageDialog(null, "Имя не может содержать символы " + deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
-                    continue;
-                }
-                break;
-            } while (true);
+            String name = getContactName("");
+            if (name == null) return;
 
             //Пробуем добавить контакт в БД
             try {
@@ -193,35 +169,12 @@ public class ContactsPane {
 
             //Получаем новое имя для контакта
             Contact selectedContact = (Contact) tableModel.getValueAt(selectedRows[0], 0);
-            String deniedChars = "_%*\"?'";
-            boolean findDeniedChar;
             String name;
-
-            do {
-                name = JOptionPane.showInputDialog(null, "Введите имя", selectedContact);
-                if (name == null) return;
-                name = name.trim();
-                if (name.equals("")) {
-                    JOptionPane.showMessageDialog(null, "Имя не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
-                    continue;
-                }
-                findDeniedChar = false;
-                for (char c : name.toCharArray()) {
-                    if (deniedChars.indexOf(c) != (-1)) {
-                        findDeniedChar = true;
-                        break;
-                    }
-                }
-                if (findDeniedChar) {
-                    JOptionPane.showMessageDialog(null, "Имя не может содержать символы " + deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
-                    continue;
-                }
-                break;
-            } while (true);
+            name = getContactName(selectedContact.getName());
+            if (name==null)return;
 
             //Пытаемся записать новое имя в базу данных
             selectedContact.setName(name);
-            int id = selectedContact.getId();
             try {
                 dataBaseConnector.changeContact(selectedContact);
             } catch (Exception ex) {
@@ -297,5 +250,35 @@ public class ContactsPane {
             tableModel.refresh();
         }
     };
+
+    private String getContactName(String startValue) {
+        String deniedChars = "_%*\"?'";
+        boolean findDeniedChar;
+        String name;
+
+        do {
+            name = JOptionPane.showInputDialog(null, "Введите имя", startValue);
+            if (name == null) return null;
+            name = name.trim();
+            if (name.equals("")) {
+                JOptionPane.showMessageDialog(null, "Имя не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
+                continue;
+            }
+            findDeniedChar = false;
+            for (char c : name.toCharArray()) {
+                if (deniedChars.indexOf(c) != (-1)) {
+                    findDeniedChar = true;
+                    break;
+                }
+            }
+            if (findDeniedChar) {
+                JOptionPane.showMessageDialog(null, "Имя не может содержать символы " + deniedChars, "", JOptionPane.INFORMATION_MESSAGE);
+                continue;
+            }
+            break;
+        } while (true);
+
+        return name;
+    }
 
 }
