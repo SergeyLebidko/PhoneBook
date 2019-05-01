@@ -170,83 +170,11 @@ public class AccoutsPane {
     private ActionListener addAccountListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String command = e.getActionCommand();
+            String accountType = e.getActionCommand();
+            Account account = getAccountName(accountType, "");
+            if (account == null) return;
 
-            Box dialogPane = Box.createHorizontalBox();
-
-            JTextField inputField = new JTextField(30);
-            inputField.setHorizontalAlignment(SwingConstants.LEFT);
-
-            ImageIcon icon = resourceLoader.getImageIconResource(command);
-            String title = null;
-            JLabel accountLabel = new JLabel();
-
-            //Выставляем параметры окна ввода аккаунта в зависимости от выбранного пункта меню
-            if (command.equals(PHONE.getType()) | command.equals(MAIL.getType())) {
-
-                //Если вводим номер телефона
-                if (command.equals(PHONE.getType())) {
-                    MaskFormatter mask = null;
-                    try {
-                        mask = new MaskFormatter("+#(###)##-##-###");
-                    } catch (ParseException ex) {
-                    }
-                    inputField = new JFormattedTextField(mask);
-                    inputField.setHorizontalAlignment(SwingConstants.CENTER);
-                    Dimension preferredDim = inputField.getPreferredSize();
-                    inputField.setPreferredSize(new Dimension(200, preferredDim.height));
-                    title = "Введите номер телефона";
-                }
-
-                //Если вводим адрес электронной почты
-                if (command.equals(MAIL.getType())) {
-                    title = "Введите адрес электронной почты";
-                }
-
-            } else {
-                title = "Введите аккаунт " + AccountTypes.valueOf(command.toUpperCase()).getType();
-                accountLabel.setText(AccountTypes.valueOf(command.toUpperCase()).getAddress());
-            }
-
-            inputField.setFont(mainFont);
-
-            //Добавляем компоненты на диалоговую панель
-            dialogPane.add(accountLabel);
-            dialogPane.add(Box.createHorizontalStrut(10));
-            dialogPane.add(inputField);
-
-            //Получаем ответ от пользователя
-            int answerCode;
-            String answerValue = "";
-            while (true) {
-                answerCode = JOptionPane.showConfirmDialog(null, dialogPane, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
-                if (answerCode != 0) return;
-
-                //Если вводили номер телефона
-                if (command.equals(PHONE.getType())) {
-                    answerValue = (String) ((JFormattedTextField) inputField).getValue();
-                    if (answerValue == null) {
-                        JOptionPane.showMessageDialog(null, "Введите корректный номер телефона", "", JOptionPane.INFORMATION_MESSAGE);
-                        continue;
-                    }
-                }
-
-                answerValue = inputField.getText();
-                answerValue = answerValue.trim();
-                if (answerValue.equals("")){
-                    JOptionPane.showMessageDialog(null, "Имя аккаунта не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
-                    continue;
-                }
-
-                break;
-            }
-
-            //Добавляем новый аккаунт в базу данных
-            int contact_id = currentContact.getId();
-            String type = AccountTypes.valueOf(command.toUpperCase()).getType();
-            String protocol = AccountTypes.valueOf(command.toUpperCase()).getProtocol();
-            String address = AccountTypes.valueOf(command.toUpperCase()).getAddress();
-            Account account = new Account(contact_id, type, protocol, address, answerValue);
+            //Добавляем созданный аккаунт в базу данных
             try {
                 dataBaseConnector.addAccount(account);
             } catch (Exception ex) {
@@ -259,6 +187,101 @@ public class AccoutsPane {
             tableModel.refresh(currentContact);
         }
     };
+
+    private Account getAccountName(String accountType, String startValue) {
+        //Создаем поле ввода данных. Если вводится номер телефона - применяем маску
+        JFormattedTextField inputField;
+        if (accountType.equals(PHONE.getType())) {
+            MaskFormatter mask = null;
+            try {
+                mask = new MaskFormatter("+#(###)##-##-###");
+            } catch (ParseException ex) {
+            }
+            inputField = new JFormattedTextField(mask);
+            inputField.setHorizontalAlignment(SwingConstants.CENTER);
+        } else {
+            inputField = new JFormattedTextField();
+            inputField.setHorizontalAlignment(SwingConstants.LEFT);
+        }
+        inputField.setFont(mainFont);
+        Dimension preferredDim = inputField.getPreferredSize();
+        inputField.setPreferredSize(new Dimension(200, preferredDim.height));
+
+        //Создаем заголовок окна ввода данных
+        String title = null;
+        if (accountType.equals(PHONE.getType()) | accountType.equals(MAIL.getType())) {
+            if (accountType.equals(PHONE.getType())) {
+                title = "Введите номер телефона";
+            }
+            if (accountType.equals(MAIL.getType())) {
+                title = "Введите адрес электронной почты";
+            }
+        }else{
+            title = "Введите аккаунт " + accountType;
+        }
+
+        //Создаем дополнительную текстовую надпись для окна ввода
+        JLabel accountLabel = new JLabel();
+        if (!accountType.equals(PHONE.getType()) & !accountType.equals(MAIL.getType())){
+            accountLabel.setText(AccountTypes.valueOf(accountType.toUpperCase()).getAddress());
+        }
+
+        //Получаем иконку для панели ввода
+        ImageIcon icon = resourceLoader.getImageIconResource(accountType);
+
+        //Создаем диалоговую панель
+        Box dialogPane = Box.createHorizontalBox();
+
+        //Добавляем компоненты на диалоговую панель
+        dialogPane.add(accountLabel);
+        dialogPane.add(Box.createHorizontalStrut(10));
+        dialogPane.add(inputField);
+
+        //Получаем ответ от пользователя
+        int answerCode;
+        String answerValue = "";
+        while (true) {
+
+            //Если мы запрашиваем не номер телефона, то по-умолчанию в поле ввода выводим старое значение
+            if (!accountType.equals(PHONE.getType())){
+                inputField.setText(startValue);
+            }
+
+            //Запрашиваем данные от пользователя
+            answerCode = JOptionPane.showConfirmDialog(null, dialogPane, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, icon);
+
+            //Если пользователь отказался от ввода - возвращаем null
+            if (answerCode != 0) return null;
+
+            //Если вводили номер телефона
+            if (accountType.equals(PHONE.getType())) {
+                answerValue = (String) inputField.getValue();
+                if (answerValue == null) {
+                    JOptionPane.showMessageDialog(null, "Введите корректный номер телефона", "", JOptionPane.INFORMATION_MESSAGE);
+                    continue;
+                }
+            }
+
+            //Проверяем корректность введенных данных
+            answerValue = inputField.getText();
+            answerValue = answerValue.trim();
+            if (answerValue.equals("")) {
+                JOptionPane.showMessageDialog(null, "Имя аккаунта не может быть пустым", "", JOptionPane.INFORMATION_MESSAGE);
+                continue;
+            }
+
+            break;
+        }
+
+        //Формируем ответ
+        int contact_id = currentContact.getId();
+        String type = AccountTypes.valueOf(accountType.toUpperCase()).getType();
+        String protocol = AccountTypes.valueOf(accountType.toUpperCase()).getProtocol();
+        String address = AccountTypes.valueOf(accountType.toUpperCase()).getAddress();
+        Account account = new Account(contact_id, type, protocol, address, answerValue);
+
+        return account;
+    }
 
 }
 
