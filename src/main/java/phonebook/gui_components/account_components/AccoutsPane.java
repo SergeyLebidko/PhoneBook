@@ -203,7 +203,6 @@ public class AccoutsPane {
             inputField = new JFormattedTextField();
             inputField.setHorizontalAlignment(SwingConstants.LEFT);
         }
-        inputField.setFont(mainFont);
         Dimension preferredDim = inputField.getPreferredSize();
         inputField.setPreferredSize(new Dimension(200, preferredDim.height));
 
