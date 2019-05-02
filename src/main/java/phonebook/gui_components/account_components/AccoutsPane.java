@@ -74,6 +74,7 @@ public class AccoutsPane {
 
         tableModel = new AccountsTableModel();
         accountsTable = new JTable(tableModel);
+        accountsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         accountsTable.setFont(mainFont);
         accountsTable.setRowHeight(rowHeight);
         accountsTable.setShowVerticalLines(false);
@@ -171,8 +172,14 @@ public class AccoutsPane {
         @Override
         public void actionPerformed(ActionEvent e) {
             String accountType = e.getActionCommand();
-            Account account = getAccountName(accountType, "");
-            if (account == null) return;
+            String accountName = getAccountName(accountType, "");
+            if (accountName == null) return;
+
+            int contact_id = currentContact.getId();
+            String type = AccountTypes.valueOf(accountType.toUpperCase()).getType();
+            String protocol = AccountTypes.valueOf(accountType.toUpperCase()).getProtocol();
+            String address = AccountTypes.valueOf(accountType.toUpperCase()).getAddress();
+            Account account = new Account(0, contact_id, type, protocol, address, accountName);
 
             //Добавляем созданный аккаунт в базу данных
             try {
@@ -188,7 +195,14 @@ public class AccoutsPane {
         }
     };
 
-    private Account getAccountName(String accountType, String startValue) {
+    private ActionListener editBtnListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    };
+
+    private String getAccountName(String accountType, String startValue) {
         //Создаем поле ввода данных. Если вводится номер телефона - применяем маску
         JFormattedTextField inputField;
         if (accountType.equals(PHONE.getType())) {
@@ -273,13 +287,7 @@ public class AccoutsPane {
         }
 
         //Формируем ответ
-        int contact_id = currentContact.getId();
-        String type = AccountTypes.valueOf(accountType.toUpperCase()).getType();
-        String protocol = AccountTypes.valueOf(accountType.toUpperCase()).getProtocol();
-        String address = AccountTypes.valueOf(accountType.toUpperCase()).getAddress();
-        Account account = new Account(contact_id, type, protocol, address, answerValue);
-
-        return account;
+        return answerValue;
     }
 
 }

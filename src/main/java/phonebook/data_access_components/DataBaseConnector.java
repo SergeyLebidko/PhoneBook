@@ -28,28 +28,30 @@ public class DataBaseConnector {
 
         //Формируем список
         LinkedList<Contact> contacts = new LinkedList<>();
-        int id;
+        int contactId;
         String name;
         while (resultSet.next()) {
-            id = resultSet.getInt(1);
+            contactId = resultSet.getInt(1);
             name = resultSet.getString(2);
-            contacts.add(new Contact(id, name));
+            contacts.add(new Contact(contactId, name));
         }
 
         //Заполняем списки аккаунтов каждого контакта
+        int accountId;
         String type;
         String protocol;
         String address;
         String account;
         for (Contact contact: contacts){
-            id = contact.getId();
-            resultSet = executeQuery("SELECT * FROM ACCOUNTS WHERE CONTACT_ID="+id);
+            contactId = contact.getId();
+            resultSet = executeQuery("SELECT * FROM ACCOUNTS WHERE CONTACT_ID="+contactId);
             while (resultSet.next()){
-                type = resultSet.getString(2);
-                protocol = resultSet.getString(3);
-                address = resultSet.getString(4);
-                account = resultSet.getString(5);
-                contact.addAccount(new Account(id, type, protocol, address, account));
+                accountId = resultSet.getInt(1);
+                type = resultSet.getString(3);
+                protocol = resultSet.getString(4);
+                address = resultSet.getString(5);
+                account = resultSet.getString(6);
+                contact.addAccount(new Account(accountId, contactId, type, protocol, address, account));
             }
         }
 
