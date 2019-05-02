@@ -11,7 +11,6 @@ import static phonebook.gui_components.GUIProperties.*;
 import static phonebook.AccountTypes.*;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
@@ -29,15 +28,15 @@ public class AccoutsPane {
     private JButton editBtn;
     private JTextField statusField;
 
-    private JPopupMenu addAccountsMenu;
-    private JMenuItem addPhoneAccount;
-    private JMenuItem addMailAccount;
-    private JMenuItem addFacebookAccount;
-    private JMenuItem addInstagramAccount;
-    private JMenuItem addOkAccount;
-    private JMenuItem addTelegramAccount;
-    private JMenuItem addTwitterAccount;
-    private JMenuItem addVkAccount;
+    private JPopupMenu createAccountsMenu;
+    private JMenuItem createPhoneAccount;
+    private JMenuItem createMailAccount;
+    private JMenuItem createFacebookAccount;
+    private JMenuItem createInstagramAccount;
+    private JMenuItem createOkAccount;
+    private JMenuItem createTelegramAccount;
+    private JMenuItem createTwitterAccount;
+    private JMenuItem createVkAccount;
 
     private Contact currentContact;
 
@@ -91,51 +90,51 @@ public class AccoutsPane {
         statusField.setEditable(false);
         statusField.setFont(mainFont);
 
-        addAccountsMenu = new JPopupMenu();
+        createAccountsMenu = new JPopupMenu();
 
-        addPhoneAccount = new JMenuItem("Номер телефона", resourceLoader.getImageIconResource(PHONE.getType()));
-        addPhoneAccount.setActionCommand(PHONE.getType());
+        createPhoneAccount = new JMenuItem("Номер телефона", resourceLoader.getImageIconResource(PHONE.getType()));
+        createPhoneAccount.setActionCommand(PHONE.getType());
 
-        addMailAccount = new JMenuItem("Элетронная почта", resourceLoader.getImageIconResource(MAIL.getType()));
-        addMailAccount.setActionCommand(MAIL.getType());
+        createMailAccount = new JMenuItem("Элетронная почта", resourceLoader.getImageIconResource(MAIL.getType()));
+        createMailAccount.setActionCommand(MAIL.getType());
 
-        addFacebookAccount = new JMenuItem("Facebook", resourceLoader.getImageIconResource(FACEBOOK.getType()));
-        addFacebookAccount.setActionCommand(FACEBOOK.getType());
+        createFacebookAccount = new JMenuItem("Facebook", resourceLoader.getImageIconResource(FACEBOOK.getType()));
+        createFacebookAccount.setActionCommand(FACEBOOK.getType());
 
-        addInstagramAccount = new JMenuItem("Instagram", resourceLoader.getImageIconResource(INSTAGRAM.getType()));
-        addInstagramAccount.setActionCommand(INSTAGRAM.getType());
+        createInstagramAccount = new JMenuItem("Instagram", resourceLoader.getImageIconResource(INSTAGRAM.getType()));
+        createInstagramAccount.setActionCommand(INSTAGRAM.getType());
 
-        addOkAccount = new JMenuItem("Одноклассники", resourceLoader.getImageIconResource(OK.getType()));
-        addOkAccount.setActionCommand(OK.getType());
+        createOkAccount = new JMenuItem("Одноклассники", resourceLoader.getImageIconResource(OK.getType()));
+        createOkAccount.setActionCommand(OK.getType());
 
-        addTelegramAccount = new JMenuItem("Telegram", resourceLoader.getImageIconResource(TELEGRAM.getType()));
-        addTelegramAccount.setActionCommand(TELEGRAM.getType());
+        createTelegramAccount = new JMenuItem("Telegram", resourceLoader.getImageIconResource(TELEGRAM.getType()));
+        createTelegramAccount.setActionCommand(TELEGRAM.getType());
 
-        addTwitterAccount = new JMenuItem("Twitter", resourceLoader.getImageIconResource(TWITTER.getType()));
-        addTwitterAccount.setActionCommand(TWITTER.getType());
+        createTwitterAccount = new JMenuItem("Twitter", resourceLoader.getImageIconResource(TWITTER.getType()));
+        createTwitterAccount.setActionCommand(TWITTER.getType());
 
-        addVkAccount = new JMenuItem("ВКонтакте", resourceLoader.getImageIconResource(VK.getType()));
-        addVkAccount.setActionCommand(VK.getType());
+        createVkAccount = new JMenuItem("ВКонтакте", resourceLoader.getImageIconResource(VK.getType()));
+        createVkAccount.setActionCommand(VK.getType());
 
-        addAccountsMenu.add(addPhoneAccount);
-        addAccountsMenu.add(addMailAccount);
-        addAccountsMenu.add(addFacebookAccount);
-        addAccountsMenu.add(addInstagramAccount);
-        addAccountsMenu.add(addOkAccount);
-        addAccountsMenu.add(addTelegramAccount);
-        addAccountsMenu.add(addTwitterAccount);
-        addAccountsMenu.add(addVkAccount);
+        createAccountsMenu.add(createPhoneAccount);
+        createAccountsMenu.add(createMailAccount);
+        createAccountsMenu.add(createFacebookAccount);
+        createAccountsMenu.add(createInstagramAccount);
+        createAccountsMenu.add(createOkAccount);
+        createAccountsMenu.add(createTelegramAccount);
+        createAccountsMenu.add(createTwitterAccount);
+        createAccountsMenu.add(createVkAccount);
 
         addBtn.addMouseListener(addBtnListner);
         editBtn.addActionListener(editBtnListener);
-        addPhoneAccount.addActionListener(addAccountListener);
-        addMailAccount.addActionListener(addAccountListener);
-        addFacebookAccount.addActionListener(addAccountListener);
-        addInstagramAccount.addActionListener(addAccountListener);
-        addOkAccount.addActionListener(addAccountListener);
-        addTelegramAccount.addActionListener(addAccountListener);
-        addTwitterAccount.addActionListener(addAccountListener);
-        addVkAccount.addActionListener(addAccountListener);
+        createPhoneAccount.addActionListener(addAccountListener);
+        createMailAccount.addActionListener(addAccountListener);
+        createFacebookAccount.addActionListener(addAccountListener);
+        createInstagramAccount.addActionListener(addAccountListener);
+        createOkAccount.addActionListener(addAccountListener);
+        createTelegramAccount.addActionListener(addAccountListener);
+        createTwitterAccount.addActionListener(addAccountListener);
+        createVkAccount.addActionListener(addAccountListener);
 
         contentPane.add(topBox, BorderLayout.NORTH);
         contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -164,7 +163,7 @@ public class AccoutsPane {
         public void mouseReleased(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1) {
                 if (currentContact == null) return;
-                addAccountsMenu.show(addBtn, e.getX(), e.getY());
+                createAccountsMenu.show(addBtn, e.getX(), e.getY());
             }
         }
     };
@@ -204,17 +203,17 @@ public class AccoutsPane {
 
             //Получаем новое имя аккаунта
             Account account = (Account) tableModel.getValueAt(selectedRow, 0);
-            String oldName = account.getAccount();
-            String newName = getAccountName(account.getType(), account.getAccount());
+            String oldName = account.getAccountName();
+            String newName = getAccountName(account.getType(), account.getAccountName());
             if (newName==null)return;
 
             //Пытаемся записать его в базу данных
-            account.setAccount(newName);
+            account.setAccountName(newName);
             try {
-                dataBaseConnector.changeAccount(currentContact.getId(), account);
+                dataBaseConnector.updateAccount(account);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Не удалось изменить аккаунт", "", JOptionPane.INFORMATION_MESSAGE);
-                account.setAccount(oldName);
+                account.setAccountName(oldName);
                 return;
             }
 
@@ -307,7 +306,6 @@ public class AccoutsPane {
             break;
         }
 
-        //Формируем ответ
         return answerValue;
     }
 

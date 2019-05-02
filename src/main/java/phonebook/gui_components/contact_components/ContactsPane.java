@@ -9,8 +9,6 @@ import phonebook.gui_components.account_components.AccoutsPane;
 import static phonebook.gui_components.GUIProperties.*;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -152,6 +150,7 @@ public class ContactsPane {
             try {
                 tableModel.setContent(dataBaseConnector.loadContacts());
                 tableModel.refresh();
+                accoutsPane.clear();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Ошибка при получении списка контактов: " + ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                 System.exit(0);
@@ -176,7 +175,7 @@ public class ContactsPane {
             //Пытаемся записать новое имя в базу данных
             selectedContact.setName(name);
             try {
-                dataBaseConnector.changeContact(selectedContact);
+                dataBaseConnector.updateContact(selectedContact);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, "Не удалось изменить контакт " + ex.getMessage(), "", JOptionPane.INFORMATION_MESSAGE);
                 return;

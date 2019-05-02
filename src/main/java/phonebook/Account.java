@@ -8,14 +8,14 @@ public class Account {
     private String type;
     private String protocol;
     private String address;
-    private String account;
+    private String accountName;
 
-    public Account(int contactId, String type, String protocol, String address, String account) {
+    public Account(int contactId, String type, String protocol, String address, String accountName) {
         this.contactId = contactId;
         this.type = type;
         this.protocol = protocol;
         this.address = address;
-        this.account = account;
+        this.accountName = accountName;
     }
 
     public int getContactId() {
@@ -34,12 +34,12 @@ public class Account {
         return address;
     }
 
-    public String getAccount() {
-        return account;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     @Override
@@ -51,12 +51,12 @@ public class Account {
                 Objects.equals(type, account1.type) &&
                 Objects.equals(protocol, account1.protocol) &&
                 Objects.equals(address, account1.address) &&
-                Objects.equals(account, account1.account);
+                Objects.equals(accountName, account1.accountName);
     }
 
     @Override
     public String toString() {
-        return account;
+        return accountName;
     }
 
 }

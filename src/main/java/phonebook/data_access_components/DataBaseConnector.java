@@ -63,24 +63,27 @@ public class DataBaseConnector {
 
     public void addAccount(Account account) throws Exception {
         String query = "INSERT INTO ACCOUNTS (CONTACT_ID, TYPE, PROTOCOL, ADDRESS, ACCOUNT) VALUES (";
-        query+=account.getContactId()+", \""+account.getType()+"\", \""+account.getProtocol()+"\", \""+account.getAddress()+"\", \""+account.getAccount()+"\")";
+        query+=account.getContactId()+", \""+account.getType()+"\", \""+account.getProtocol()+"\", \""+account.getAddress()+"\", \""+account.getAccountName()+"\")";
         updateQuery(query);
     }
 
     public void deleteContact(Contact contact) throws Exception {
+        //Удалаем контакт...
         String query = "DELETE FROM CONTACTS WHERE ID="+contact.getId();
         updateQuery(query);
 
-        //ВСТАВИТЬ КОД УДАЛЕНИЯ АККАУНТОВ, СВЯЗАННЫХ С ДАННЫМ КОНТАКТОМ
+        //...и все связанные с ним аккаунты
+        query = "DELETE FROM ACCOUNTS WHERE CONTACT_ID="+contact.getId();
+        updateQuery(query);
     }
 
-    public void changeContact(Contact contact) throws Exception {
+    public void updateContact(Contact contact) throws Exception {
         String query = "UPDATE CONTACTS SET NAME = \""+contact.getName()+"\" WHERE ID="+contact.getId();
         updateQuery(query);
     }
 
-    public void changeAccount(int contactId, Account account) throws Exception{
-        String query = "UPDATE ACCOUNTS SET ACCOUNT=\""+account.getAccount()+"\" WHERE CONTACT_ID="+account.getContactId()+" AND TYPE=\""+account.getType()+"\"";
+    public void updateAccount(Account account) throws Exception{
+        String query = "UPDATE ACCOUNTS SET ACCOUNT=\""+account.getAccountName()+"\" WHERE CONTACT_ID="+account.getContactId()+" AND TYPE=\""+account.getType()+"\"";
         updateQuery(query);
     }
 

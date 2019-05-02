@@ -19,7 +19,7 @@ public class AccountTableCellRenderer extends DefaultTableCellRenderer {
             lab.setIcon(MainClass.resourceLoader.getImageIconResource(account.getType()));
         }
         if (column==1){
-            lab.setText(account.getAccount());
+            lab.setText(account.getAccountName());
             lab.setIcon(null);
         }
         return lab;
