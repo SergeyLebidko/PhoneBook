@@ -14,6 +14,9 @@ import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 
 public class AccoutsPane {
@@ -128,6 +131,7 @@ public class AccoutsPane {
         addBtn.addMouseListener(addBtnListner);
         deleteBtn.addActionListener(deleteBtnListener);
         editBtn.addActionListener(editBtnListener);
+        accountsTable.addMouseListener(tableMouseListener);
         createPhoneAccount.addActionListener(addAccountListener);
         createMailAccount.addActionListener(addAccountListener);
         createFacebookAccount.addActionListener(addAccountListener);
@@ -150,6 +154,7 @@ public class AccoutsPane {
         currentContact = contact;
         contactField.setText(currentContact.getName());
         tableModel.refresh(currentContact);
+        statusField.setText("");
     }
 
     public void clear() {
@@ -180,7 +185,7 @@ public class AccoutsPane {
             String type = AccountTypes.valueOf(accountType.toUpperCase()).getType();
             String protocol = AccountTypes.valueOf(accountType.toUpperCase()).getProtocol();
             String address = AccountTypes.valueOf(accountType.toUpperCase()).getAddress();
-            Account account = new Account( contact_id, type, protocol, address, accountName);
+            Account account = new Account(contact_id, type, protocol, address, accountName);
 
             //Добавляем созданный аккаунт в базу данных
             try {
@@ -200,7 +205,7 @@ public class AccoutsPane {
         @Override
         public void actionPerformed(ActionEvent e) {
             int selectedRow = accountsTable.getSelectedRow();
-            if (selectedRow==(-1))return;
+            if (selectedRow == (-1)) return;
 
             //Пытаемся удалить выбранный аккаунт
             Account account = (Account) tableModel.getValueAt(selectedRow, 0);
@@ -221,13 +226,13 @@ public class AccoutsPane {
         @Override
         public void actionPerformed(ActionEvent e) {
             int selectedRow = accountsTable.getSelectedRow();
-            if (selectedRow==(-1))return;
+            if (selectedRow == (-1)) return;
 
             //Получаем новое имя аккаунта
             Account account = (Account) tableModel.getValueAt(selectedRow, 0);
             String oldName = account.getAccountName();
             String newName = getAccountName(account.getType(), account.getAccountName());
-            if (newName==null)return;
+            if (newName == null) return;
 
             //Пытаемся записать его в базу данных
             account.setAccountName(newName);
@@ -242,6 +247,50 @@ public class AccoutsPane {
             //Отображаем изменения
             tableModel.refresh(currentContact);
         }
+    };
+
+    private MouseListener tableMouseListener = new MouseAdapter() {
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            int selectedRow;
+            selectedRow = accountsTable.getSelectedRow();
+            Account account = (Account) tableModel.getValueAt(selectedRow, 0);
+            String accountPath = account.getProtocol() + account.getAddress() + account.getAccountName();
+
+            if (account.getType().equals(PHONE.getType()) | account.getType().equals(MAIL.getType())) {
+                statusField.setText(account.getAccountName());
+                return;
+            }
+            statusField.setText(accountPath);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int selectedRow;
+            selectedRow = accountsTable.getSelectedRow();
+            Account account = (Account) tableModel.getValueAt(selectedRow, 0);
+            String accountPath = account.getProtocol() + account.getAddress() + account.getAccountName();
+
+            //Если двойной щелчёк - открываем аккаунт (за исключением телефонных номеров и адресов электронной почты)
+            if (e.getClickCount() == 2 & e.getButton() == MouseEvent.BUTTON1) {
+                if (account.getType().equals(PHONE.getType())) return;
+                try {
+                    URI accountURI = new URI(accountPath);
+                    if (account.getType().equals(MAIL.getType())){
+                        Desktop.getDesktop().mail(accountURI);
+                        return;
+                    }
+                    Desktop.getDesktop().browse(accountURI);
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(null, "Не удалось открыть "+accountPath, "", JOptionPane.INFORMATION_MESSAGE);
+                } catch (URISyntaxException e1) {
+                    System.out.println("Ошибка синтаксиса URI");
+                }
+                return;
+            }
+        }
+
     };
 
     private String getAccountName(String accountType, String startValue) {
@@ -271,13 +320,13 @@ public class AccoutsPane {
             if (accountType.equals(MAIL.getType())) {
                 title = "Введите адрес электронной почты";
             }
-        }else{
+        } else {
             title = "Введите аккаунт " + accountType;
         }
 
         //Создаем дополнительную текстовую надпись для окна ввода
         JLabel accountLabel = new JLabel();
-        if (!accountType.equals(PHONE.getType()) & !accountType.equals(MAIL.getType())){
+        if (!accountType.equals(PHONE.getType()) & !accountType.equals(MAIL.getType())) {
             accountLabel.setText(AccountTypes.valueOf(accountType.toUpperCase()).getAddress());
         }
 
@@ -298,7 +347,7 @@ public class AccoutsPane {
         while (true) {
 
             //Если мы запрашиваем не номер телефона, то по-умолчанию в поле ввода выводим старое значение
-            if (!accountType.equals(PHONE.getType())){
+            if (!accountType.equals(PHONE.getType())) {
                 inputField.setText(startValue);
             }
 
