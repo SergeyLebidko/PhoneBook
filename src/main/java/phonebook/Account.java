@@ -1,25 +1,21 @@
 package phonebook;
 
+import java.util.Objects;
+
 public class Account {
 
-    private int id;
     private int contactId;
     private String type;
     private String protocol;
     private String address;
     private String account;
 
-    public Account(int id, int contactId, String type, String protocol, String address, String account) {
-        this.id = id;
+    public Account(int contactId, String type, String protocol, String address, String account) {
         this.contactId = contactId;
         this.type = type;
         this.protocol = protocol;
         this.address = address;
         this.account = account;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public int getContactId() {
@@ -42,6 +38,21 @@ public class Account {
         return account;
     }
 
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account1 = (Account) o;
+        return contactId == account1.contactId &&
+                Objects.equals(type, account1.type) &&
+                Objects.equals(protocol, account1.protocol) &&
+                Objects.equals(address, account1.address) &&
+                Objects.equals(account, account1.account);
+    }
 
     @Override
     public String toString() {

@@ -127,6 +127,7 @@ public class AccoutsPane {
         addAccountsMenu.add(addVkAccount);
 
         addBtn.addMouseListener(addBtnListner);
+        editBtn.addActionListener(editBtnListener);
         addPhoneAccount.addActionListener(addAccountListener);
         addMailAccount.addActionListener(addAccountListener);
         addFacebookAccount.addActionListener(addAccountListener);
@@ -179,7 +180,7 @@ public class AccoutsPane {
             String type = AccountTypes.valueOf(accountType.toUpperCase()).getType();
             String protocol = AccountTypes.valueOf(accountType.toUpperCase()).getProtocol();
             String address = AccountTypes.valueOf(accountType.toUpperCase()).getAddress();
-            Account account = new Account(0, contact_id, type, protocol, address, accountName);
+            Account account = new Account( contact_id, type, protocol, address, accountName);
 
             //Добавляем созданный аккаунт в базу данных
             try {
@@ -198,7 +199,27 @@ public class AccoutsPane {
     private ActionListener editBtnListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            int selectedRow = accountsTable.getSelectedRow();
+            if (selectedRow==(-1))return;
 
+            //Получаем новое имя аккаунта
+            Account account = (Account) tableModel.getValueAt(selectedRow, 0);
+            String oldName = account.getAccount();
+            String newName = getAccountName(account.getType(), account.getAccount());
+            if (newName==null)return;
+
+            //Пытаемся записать его в базу данных
+            account.setAccount(newName);
+            try {
+                dataBaseConnector.changeAccount(currentContact.getId(), account);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Не удалось изменить аккаунт", "", JOptionPane.INFORMATION_MESSAGE);
+                account.setAccount(oldName);
+                return;
+            }
+
+            //Отображаем изменения
+            tableModel.refresh(currentContact);
         }
     };
 

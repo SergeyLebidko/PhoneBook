@@ -37,7 +37,6 @@ public class DataBaseConnector {
         }
 
         //Заполняем списки аккаунтов каждого контакта
-        int accountId;
         String type;
         String protocol;
         String address;
@@ -46,12 +45,11 @@ public class DataBaseConnector {
             contactId = contact.getId();
             resultSet = executeQuery("SELECT * FROM ACCOUNTS WHERE CONTACT_ID="+contactId);
             while (resultSet.next()){
-                accountId = resultSet.getInt(1);
-                type = resultSet.getString(3);
-                protocol = resultSet.getString(4);
-                address = resultSet.getString(5);
-                account = resultSet.getString(6);
-                contact.addAccount(new Account(accountId, contactId, type, protocol, address, account));
+                type = resultSet.getString(2);
+                protocol = resultSet.getString(3);
+                address = resultSet.getString(4);
+                account = resultSet.getString(5);
+                contact.addAccount(new Account(contactId, type, protocol, address, account));
             }
         }
 
@@ -78,6 +76,11 @@ public class DataBaseConnector {
 
     public void changeContact(Contact contact) throws Exception {
         String query = "UPDATE CONTACTS SET NAME = \""+contact.getName()+"\" WHERE ID="+contact.getId();
+        updateQuery(query);
+    }
+
+    public void changeAccount(int contactId, Account account) throws Exception{
+        String query = "UPDATE ACCOUNTS SET ACCOUNT=\""+account.getAccount()+"\" WHERE CONTACT_ID="+account.getContactId()+" AND TYPE=\""+account.getType()+"\"";
         updateQuery(query);
     }
 
