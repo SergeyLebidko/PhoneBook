@@ -126,6 +126,7 @@ public class AccoutsPane {
         createAccountsMenu.add(createVkAccount);
 
         addBtn.addMouseListener(addBtnListner);
+        deleteBtn.addActionListener(deleteBtnListener);
         editBtn.addActionListener(editBtnListener);
         createPhoneAccount.addActionListener(addAccountListener);
         createMailAccount.addActionListener(addAccountListener);
@@ -191,6 +192,27 @@ public class AccoutsPane {
 
             //Если аккаунт успешно добавлен, то обновляем список аккаунтов данного пользователя
             currentContact.addAccount(account);
+            tableModel.refresh(currentContact);
+        }
+    };
+
+    private ActionListener deleteBtnListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int selectedRow = accountsTable.getSelectedRow();
+            if (selectedRow==(-1))return;
+
+            //Пытаемся удалить выбранный аккаунт
+            Account account = (Account) tableModel.getValueAt(selectedRow, 0);
+            try {
+                dataBaseConnector.deleteAccount(account);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, "Не удалось удалить аккаунт", "", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            //Если удаление прошло успешно, то отображаем изменения на экране
+            currentContact.removeAccount(account);
             tableModel.refresh(currentContact);
         }
     };

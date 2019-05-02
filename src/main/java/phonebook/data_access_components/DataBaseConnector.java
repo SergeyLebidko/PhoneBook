@@ -87,6 +87,11 @@ public class DataBaseConnector {
         updateQuery(query);
     }
 
+    public void deleteAccount(Account account) throws Exception{
+        String query = "DELETE FROM ACCOUNTS WHERE CONTACT_ID="+account.getContactId()+" AND TYPE=\""+account.getType()+"\" AND ACCOUNT=\""+account.getAccountName()+"\"";
+        updateQuery(query);
+    }
+
     private ResultSet executeQuery(String SQLQuery) throws Exception {
         return statement.executeQuery(SQLQuery);
     }
