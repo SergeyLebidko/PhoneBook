@@ -41,12 +41,16 @@ public class ContactsPane {
         Box topBox = Box.createHorizontalBox();
 
         addBtn = new JButton(resourceLoader.getImageIconResource("add"));
+        addBtn.setToolTipText("Добавить контакт");
         deleteBtn = new JButton(resourceLoader.getImageIconResource("delete"));
+        deleteBtn.setToolTipText("Удалить контакт");
         editBtn = new JButton(resourceLoader.getImageIconResource("edit"));
+        editBtn.setToolTipText("Редактировать контакт");
         findField = new JTextField();
         findField.setMinimumSize(new Dimension(100, 20));
         findField.setFont(mainFont);
         cleanFindFieldBtn = new JButton(resourceLoader.getImageIconResource("clean"));
+        cleanFindFieldBtn.setToolTipText("Очистить поле поиска");
 
         topBox.add(addBtn);
         topBox.add(Box.createHorizontalStrut(5));

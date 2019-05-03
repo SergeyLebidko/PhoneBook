@@ -62,8 +62,11 @@ public class AccoutsPane {
         contactField.setMinimumSize(new Dimension(100, 20));
 
         addBtn = new JButton(resourceLoader.getImageIconResource("add"));
+        addBtn.setToolTipText("Добавить аккаунт");
         deleteBtn = new JButton(resourceLoader.getImageIconResource("delete"));
+        deleteBtn.setToolTipText("Удалить аккаунт");
         editBtn = new JButton(resourceLoader.getImageIconResource("edit"));
+        editBtn.setToolTipText("Редактировать аккаунт");
 
         topBox.add(contactField);
         topBox.add(Box.createHorizontalGlue());
